@@ -1,9 +1,6 @@
 package in.dev.gmsk.collections_puzzlers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.lang.System.*;
@@ -15,6 +12,7 @@ public class Devoxx_Class {
         _2_Sublist();
        // _3a_HandlingNulls();
        // _3b_HandlingNulls();
+        _4a_MultiMap();
     }
 
     private static void _1_arrays_As_List() {
@@ -58,5 +56,16 @@ public class Devoxx_Class {
         var list = Arrays.asList(strings);
         list.removeIf(Objects::isNull);
         out.println("\nlist size = " + list.size()); // java.lang.UnsupportedOperationException
+    }
+
+    private static void _4a_MultiMap(){
+
+        Map<Integer, String> map = new HashMap<>();
+        map.put(1, null);
+
+        out.print("\ndefaultVal = "+map.getOrDefault(1, "Nothing..."));
+
+        map.putIfAbsent(1, "One");
+        out.print("\tgetVal = "+map.get(1));
     }
 }
