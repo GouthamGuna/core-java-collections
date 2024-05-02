@@ -75,11 +75,7 @@ public class Sample {
         var cfOne = create(2); // 4
         var cfTwo = create(3); // 6
 
-
-        /*
-          cfOne.thenCombine( cfTwo, (dataOne, dataTwo) -> dataOne + dataTwo )
-                          .thenAccept( System.out::println );
-          */
+        //cfOne.thenCombine( cfTwo, (dataOne, dataTwo) -> dataOne + dataTwo ).thenAccept( System.out::println );
 
         cfOne.thenCombine(cfTwo, Integer::sum).thenAccept(System.out::println);
     }
