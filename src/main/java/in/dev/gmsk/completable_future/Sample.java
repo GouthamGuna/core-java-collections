@@ -1,6 +1,20 @@
 package in.dev.gmsk.completable_future;
 
+import in.dev.gmsk.service.AccountService;
+import in.dev.gmsk.service.impl.AccountsImpl;
+import in.dev.gmsk.util.JDBCConnection;
+import in.dev.gmsk.util.model.Accounts;
+import lombok.SneakyThrows;
+
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * CompletableFuture to handle asynchronous tasks.
@@ -10,8 +24,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class Sample {
 
+    private static final JDBCConnection jdbcConnection = new JDBCConnection(
+            "jdbc:mariadb://localhost:3306/pearl", "root", "asus@root"
+    );
+    private static final AccountService service = new AccountsImpl();
+
     public static void main(String[] args) {
-        cfExampleOne();
+        //cfExampleOne();
         cfExampleTwo();
         cfExampleTwoPointOne();
 
@@ -24,6 +43,23 @@ public class Sample {
 
         // Wait for completion (optional)
         combined.join();
+
+        // Run method getVouchersList()
+        CompletableFuture<Map<String, Double>> futureResult = getVouchersListByFuture();
+
+        // Handle the result when it's available
+        futureResult.thenAccept(map -> {
+            System.out.println("Vouchers List:");
+            map.forEach((heading, amount) -> System.out.println(STR."\{heading}: \{amount}"));
+        });
+
+        // Wait for completion (optional)
+        futureResult.join();
+
+        // this is processing doing by completable future
+        Map<String, Double> vouchersMap = getVouchersMap();
+        System.out.println("Vouchers List:");
+        vouchersMap.forEach((heading, amount) -> System.out.println(STR."\{heading}: \{amount}"));
     }
 
     public static int compute(int n) {
@@ -107,5 +143,53 @@ public class Sample {
 
     static void c() {
         System.out.println("Method c() executed.");
+    }
+
+    public static CompletableFuture<Map<String, Double>> getVouchersListByFuture() {
+
+        System.out.println(STR."Thread currentThread() : \{Thread.currentThread()}");
+        System.out.println(STR."Thread getName() : \{Thread.currentThread().getName()}");
+
+        LocalDate startDate = LocalDate.of(2023, 4, 1);
+        LocalDate endDate = LocalDate.of(2024, 5, 31);
+
+        Stream<Accounts> byAll = service.findByAll(jdbcConnection);
+
+        Map<String, Double> map = byAll.filter(o -> Objects.equals(o.getLocationId(), "5"))
+                .filter(o -> o.getVoucherType().equals("P"))
+                .filter(getAccountsPredicate(startDate, endDate))
+                .collect(Collectors.groupingBy(Accounts::getAccountsHeadingName,
+                        Collectors.summingDouble(Accounts::getAmount)));
+
+        return CompletableFuture.supplyAsync(() -> map);
+    }
+
+    @SneakyThrows
+    public static Map<String, Double> getVouchersMap() {
+
+        CompletableFuture<Map<String, Double>> future = CompletableFuture.supplyAsync(() -> {
+
+            System.out.println(STR."Thread currentThread() : \{Thread.currentThread()}");
+            System.out.println(STR."Thread getName() : \{Thread.currentThread().getName()}");
+
+            LocalDate startDate = LocalDate.of(2023, 4, 1);
+            LocalDate endDate = LocalDate.of(2024, 5, 31);
+
+            Stream<Accounts> byAll = service.findByAll(jdbcConnection);
+
+            return byAll.filter(o -> Objects.equals(o.getLocationId(), "5"))
+                    .filter(o -> o.getVoucherType().equals("P"))
+                    .filter(getAccountsPredicate(startDate, endDate))
+                    .collect(Collectors.groupingBy(Accounts::getAccountsHeadingName,
+                            Collectors.summingDouble(Accounts::getAmount)));
+
+        }, Executors.newCachedThreadPool()); // Threads that have not been used for sixty seconds are terminated and removed from the cache.
+
+        return future.get();
+    }
+
+    private static Predicate<Accounts> getAccountsPredicate(LocalDate startDate, LocalDate endDate) {
+        return o -> (o.getVoucherDate().isAfter(startDate) || o.getVoucherDate().isEqual(startDate))
+                && (o.getVoucherDate().isBefore(endDate) || o.getVoucherDate().isEqual(endDate));
     }
 }
