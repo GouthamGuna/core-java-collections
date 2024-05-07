@@ -11,7 +11,7 @@ public class AsynchronousExceptionHandling {
                 .thenApplyAsync(result -> addAsync.apply(result, 5))
                 .thenApplyAsync(result -> divideAsync.apply(result, 0))
                 .exceptionally(ex -> {
-                    System.out.println("Error occurred: " + ex.getMessage());
+                    System.out.println(STR."Error occurred: \{ex.getMessage()}");
                     return null; // Handle exception gracefully
                 })
                 .thenAccept(System.out::println); // Print final result
