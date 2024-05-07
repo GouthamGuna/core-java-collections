@@ -24,8 +24,8 @@ public class IntroClass {
     public static void main(String[] args) {
         //exampleOne();
         //exampleTwo();
-        //exampleThree();
-        exampleFour();
+        exampleThree();
+        //exampleFour();
     }
 
     public static void exampleOne() {
@@ -37,7 +37,7 @@ public class IntroClass {
         for (int i = 0; i < 100; i++) {
             service.execute(new Task());
         }
-        System.out.println("current thread = " + Thread.currentThread().getName());
+        System.out.println(STR."current thread = \{Thread.currentThread().getName()}");
         service.shutdown();
     }
 
@@ -47,7 +47,7 @@ public class IntroClass {
 
         //  Submit to task to execute
         executorService.execute(new CPUIntensiveTask());
-        System.out.println("current thread = " + Thread.currentThread().getName());
+        System.out.println(STR."current thread = \{Thread.currentThread().getName()}");
         executorService.shutdown();
     }
 
@@ -60,7 +60,7 @@ public class IntroClass {
         for (int i = 0; i < 100; i++) {
             service.execute(new Task());
         }
-        System.out.println("current thread = " + Thread.currentThread().getName());
+        System.out.println(STR."current thread = \{Thread.currentThread().getName()}");
         service.shutdown();
     }
 
