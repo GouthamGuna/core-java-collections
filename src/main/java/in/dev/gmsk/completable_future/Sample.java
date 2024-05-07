@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -94,7 +93,7 @@ public class Sample {
         create(-4) // return CompletableFuture<Integer>
                 .thenApply(data -> data + 1.0) // return CompletableFuture<Double>
                 .exceptionally(err -> {
-                    System.out.println("err = " + err);
+                    System.out.println(STR."err = \{err}");
                     // return 100.0; // return CompletableFuture<Integer>
                     throw new RuntimeException("This beyond repair.");
                 })
@@ -102,7 +101,7 @@ public class Sample {
                 .thenRun(() -> System.out.println("Log some info..."))
                 .thenRun(() -> System.out.println("Some thing do..."))
                 .exceptionally(err -> {
-                    System.out.println("err = " + err);
+                    System.out.println(STR."err = \{err}");
                     throw new RuntimeException("Sorry.");
                 });
     }
