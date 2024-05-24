@@ -45,4 +45,27 @@ public class _List {
 
         return array[left];
     }
+
+    public static List<Integer> multiplePeakElementFinder(int[] arr) {
+        List<Integer> peaks = new ArrayList<>();
+        // Handle empty array case
+        if (arr.length == 0) {
+            return peaks;
+        }
+        // Check the first element
+        if (arr.length == 1 || arr[0] >= arr[1]) {
+            peaks.add(arr[0]);
+        }
+        // Check middle elements
+        for (int i = 1; i < arr.length - 1; i++) {
+            if (arr[i] >= arr[i - 1] && arr[i] >= arr[i + 1]) {
+                peaks.add(arr[i]);
+            }
+        }
+        // Check the last element
+        if (arr[arr.length - 1] >= arr[arr.length - 2]) {
+            peaks.add(arr[arr.length - 1]);
+        }
+        return peaks;
+    }
 }

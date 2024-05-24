@@ -2,6 +2,8 @@ package in.dev.gmsk.collections_category;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -81,5 +83,46 @@ class ListTest {
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> findPeakElementInArray(array));
+    }
+
+    @Test
+    void testMultiplePeakElementFinder_EmptyArray() {
+        int[] arr = {};
+        List<Integer> peaks = _List.multiplePeakElementFinder(arr);
+        assertTrue(peaks.isEmpty());
+    }
+
+    @Test
+    void testMultiplePeakElementFinder_SinglePeak() {
+        int[] arr = {5};
+        List<Integer> peaks = _List.multiplePeakElementFinder(arr);
+        assertEquals(1, peaks.size());
+        assertEquals(5, peaks.get(0));
+    }
+
+    @Test
+    void testMultiplePeakElementFinder_TwoPeaks() {
+        int[] arr = {2, 4, 7, 9, 11};
+        List<Integer> peaks = _List.multiplePeakElementFinder(arr);
+        assertEquals(2, peaks.size());
+        assertEquals(7, peaks.get(0));
+        assertEquals(11, peaks.get(1));
+    }
+
+    @Test
+    void testMultiplePeakElementFinder_ThreePeaks() {
+        int[] arr = {1, 3, 5, 7, 9, 11, 13, 15, 17, 19};
+        List<Integer> peaks = _List.multiplePeakElementFinder(arr);
+        assertEquals(3, peaks.size());
+        assertEquals(5, peaks.get(0));
+        assertEquals(11, peaks.get(1));
+        assertEquals(17, peaks.get(2));
+    }
+
+    @Test
+    void testMultiplePeakElementFinder_NoPeaks() {
+        int[] arr = {1, 2, 3, 4, 5};
+        List<Integer> peaks = _List.multiplePeakElementFinder(arr);
+        assertTrue(peaks.isEmpty());
     }
 }
