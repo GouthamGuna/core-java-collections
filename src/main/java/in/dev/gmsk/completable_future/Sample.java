@@ -4,6 +4,7 @@ import in.dev.gmsk.service.AccountService;
 import in.dev.gmsk.service.impl.AccountsImpl;
 import in.dev.gmsk.util.JDBCConnection;
 import in.dev.gmsk.util.model.Accounts;
+import in.dev.gmsk.util.model.FeeModel;
 import lombok.SneakyThrows;
 
 import java.time.LocalDate;
@@ -27,6 +28,15 @@ public class Sample {
             "jdbc:mariadb://localhost:3306/pearl", "root", "asus@root"
     );
     private static final AccountService service = new AccountsImpl();
+
+    private static final FeeModel MODEL;
+
+    static {
+        MODEL = new FeeModel();
+        MODEL.setLocationId("1");
+        MODEL.setAccYearId("3");
+
+    }
 
     public static void main(String[] args) {
         //cfExampleOne();
@@ -59,6 +69,8 @@ public class Sample {
         Map<String, Double> vouchersMap = getVouchersMap();
         System.out.println("Vouchers List:");
         vouchersMap.forEach((heading, amount) -> System.out.println(STR."\{heading}: \{amount}"));
+
+        //service.getDefaulterFeeList(jdbcConnection)
     }
 
     public static int compute(int n) {
