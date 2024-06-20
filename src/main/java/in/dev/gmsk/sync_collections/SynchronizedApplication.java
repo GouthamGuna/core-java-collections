@@ -1,4 +1,4 @@
-package in.dev.gmsk.synchronizedcollections;
+package in.dev.gmsk.sync_collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
